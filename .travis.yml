@@ -4,12 +4,17 @@ php:
   - 7.2
   - 7.3
 
+services:
+  - mysql
+
 before_script:
+  - mysql -e 'CREATE DATABASE laravel;'
   - cd laravel
   - cp .env.example .env
   - composer install
   - php artisan key:generate
-
+  - php artisan migrate
+  - php artisan passport:install
 script:
   - vendor/bin/phpunit
   - vendor/bin/phpstan analyse
