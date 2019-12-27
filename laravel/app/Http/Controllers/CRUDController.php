@@ -16,24 +16,28 @@ abstract class CRUDController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $items = $this->repository->getAll($request);
+        $items = $this->repository->getAll($request->query());
 
         return $this->sendSuccessResponse($items);
     }
 
     public function store(AddRequest $request)
     {
-        $this->model->fill($request->all());
+        $book = $this->model->fill($request->all())->save();
 
-        $this->sendSuccessResponse('success', 201);
+        if ($book) {
+            return $this->sendSuccessResponse('Successfully added', 201);
+        } else {
+            return $this->sendErrorResponse('Not added');
+        }
     }
 
     public function destroy($id)
     {
         if ($this->model::destroy($id)) {
-            $this->sendSuccessResponse('success', 200);
+            return $this->sendSuccessResponse('Deleted');
         } else {
-            $this->sendErrorResponse('Not found', 404);
+            return $this->sendErrorResponse('Not found', 404);
         }
     }
 

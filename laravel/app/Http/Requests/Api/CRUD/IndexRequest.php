@@ -31,7 +31,7 @@ class IndexRequest extends FormRequest
                 $descKeys = array_map(function ($key) {
                     return '-'.$key;
                 }, $keys);
-                $string = implode(':', array_merge($keys, $descKeys));
+                $string = implode(',', array_merge($keys, $descKeys));
                 $result['sort'] = ["in:$string"];
             }
         }
