@@ -3,11 +3,8 @@
 namespace App\Http\Requests\Api\CRUD;
 
 use App\Models\ISortable;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
-use App\Models;
 
-class IndexRequest extends FormRequest
+class IndexRequest extends BaseCrudRequest
 {
     public function rules()
     {
@@ -17,14 +14,10 @@ class IndexRequest extends FormRequest
         ];
     }
 
-    private function buildRules()
+    protected function buildRules()
     {
         $result = [];
-
-        $name = Str::singular(explode('/', $this->path())[1]);
-        $className = 'App\Models\\'.ucfirst($name);
-        if (class_exists($className)) {
-            $object = new $className();
+        if ($object = $this->getClass()) {
             if ($object instanceof ISortable) {
                 $sortFieldAliases = $object->getFieldAliases();
                 $keys = array_keys($sortFieldAliases);
