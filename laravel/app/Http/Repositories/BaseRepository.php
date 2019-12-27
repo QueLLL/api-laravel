@@ -2,7 +2,7 @@
 
 namespace App\Http\Repositories;
 
-use App\Models\Traits\ISortable;
+use App\Models\ISortable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -31,13 +31,13 @@ abstract class BaseRepository
                 $this->addOrderBy($query, $params['sort'], $aliases);
             }
 
-            if ($key = 'limit') {
+            if ($key == 'limit') {
                 $query->limit($params['limit']);
             } else {
                 $query->limit(self::DEFAULT_LIMIT);
             }
 
-            if ($key = 'offest') {
+            if ($key == 'offest') {
                 $query->offset($params['offest']);
             }
         }
