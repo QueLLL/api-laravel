@@ -18,7 +18,11 @@ abstract class CRUDController extends Controller
     {
         $items = $this->repository->getAll($request->query());
 
-        return $this->sendSuccessResponse($items);
+        if (count($items) > 0) {
+            return $this->sendSuccessResponse($items);
+        } else {
+            return $this->sendErrorResponse('Not found', 404);
+        }
     }
 
     public function store(AddRequest $request)
@@ -41,10 +45,14 @@ abstract class CRUDController extends Controller
         }
     }
 
-    public function update(addRequest $request, $id)
+    public function update(AddRequest $request, $id)
     {
-//        $this->model::query()->find($id)->first()->update($request);
-//
-//        return response()->json('success', 200);
+        $result = $this->model::query()->find($id)->first()->update($request->all());
+
+        if ($result) {
+            return $this->sendSuccessResponse('Updated', 200);
+        } else {
+            return $this->sendErrorResponse('Error');
+        }
     }
 }
