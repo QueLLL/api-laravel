@@ -30,7 +30,7 @@ abstract class BaseRepository
     public function getAll($params)
     {
         $model = $this->model;
-        $query = DB::table($model->getTable());
+        $query = DB::table($model->getTable())->whereNull('deleted_at');
         foreach ($params as $key => $param) {
             if ($key == 'sort'&& $model instanceof ISortable) {
                 /** @var ISortable $model */

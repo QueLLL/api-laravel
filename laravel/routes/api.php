@@ -26,7 +26,7 @@ Route::group(['namespace' => 'Api'], function () {
 
     Route::group(['namespace' => 'Books', 'middleware' => 'auth:api'], function () {
         Route::resource('books', 'BooksCRUDController', ['only' => [
-            'index', 'show', 'store', 'update'
+            'index', 'show', 'store', 'update', 'destroy'
         ]]);
     });
 });
