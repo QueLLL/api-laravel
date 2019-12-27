@@ -21,20 +21,20 @@ class IndexRequest extends FormRequest
     {
         $result = [];
 
-        $name = Str::singular(explode('/',$this->path())[1]);
+        $name = Str::singular(explode('/', $this->path())[1]);
         $className = 'App\Models\\'.ucfirst($name);
-         if (class_exists($className)) {
-             $object = new $className();
-             if ($object instanceof ISortable) {
-                 $sortFieldAliases = $object->getFieldAliases();
-                 $keys = array_keys($sortFieldAliases);
-                 $descKeys = array_map(function ($key) {
-                     return '-'.$key;
-                 },$keys);
-                 $string = implode(':',array_merge($keys, $descKeys));
-                 $result['sort'] = ["in:$string"];
-             }
-         }
-         return $result;
+        if (class_exists($className)) {
+            $object = new $className();
+            if ($object instanceof ISortable) {
+                $sortFieldAliases = $object->getFieldAliases();
+                $keys = array_keys($sortFieldAliases);
+                $descKeys = array_map(function ($key) {
+                    return '-'.$key;
+                }, $keys);
+                $string = implode(':', array_merge($keys, $descKeys));
+                $result['sort'] = ["in:$string"];
+            }
+        }
+        return $result;
     }
 }
