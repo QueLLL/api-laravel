@@ -23,4 +23,10 @@ Route::group(['namespace' => 'Api'], function () {
         Route::post('login', 'LoginController');
         Route::post('logout', 'LogoutController')->middleware('auth:api');
     });
+
+    Route::group(['namespace' => 'Books', 'middleware' => 'auth:api'], function () {
+        Route::resource('books', 'BooksCRUDController', ['only' => [
+            'index', 'show', 'store', 'update', 'destroy'
+        ]]);
+    });
 });

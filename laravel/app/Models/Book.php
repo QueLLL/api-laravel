@@ -21,4 +21,10 @@ class Book extends Model implements ISortable
             'pages' => 'number_of_pages'
         ];
     }
+
+    public $validateParams = [
+        'name' => ['required', 'string'],
+        'year_of_writing' => ['integer', 'min:100', 'max:2100'],
+        'number_of_pages' => ['integer', 'min:0'],
+    ];
 }

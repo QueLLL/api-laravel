@@ -6,6 +6,7 @@ use App\Models\ISortable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 abstract class BaseRepository
 {
@@ -19,11 +20,17 @@ abstract class BaseRepository
         $this->model = new $this->model();
     }
 
-    public function getAll($params) : Collection
+    /**
+     * Метод для получения набора сущностей по заданным параметрам:
+     * лимит, оффсет, сортировка
+     *
+     * @param $params
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAll($params)
     {
         $model = $this->model;
-        $query = $model::query();
-
+        $query = DB::table($model->getTable())->whereNull('deleted_at');
         foreach ($params as $key => $param) {
             if ($key == 'sort'&& $model instanceof ISortable) {
                 /** @var ISortable $model */
@@ -33,19 +40,26 @@ abstract class BaseRepository
 
             if ($key == 'limit') {
                 $query->limit($params['limit']);
-            } else {
-                $query->limit(self::DEFAULT_LIMIT);
             }
 
-            if ($key == 'offest') {
-                $query->offset($params['offest']);
+            if ($key == 'offset') {
+                $query->offset($params['offset']);
             }
         }
-
+        if (!array_key_exists('limit', $params)) {
+            $query->limit(self::DEFAULT_LIMIT);
+        }
         return $query->get();
     }
 
-    protected function addOrderBy(&$query, $params, $aliases): void
+    /**
+     * Добавляет в запрос order by
+     *
+     * @param $query
+     * @param $params
+     * @param $aliases
+     */
+    protected function addOrderBy(&$query, $params, $aliases)
     {
         $sortParams = explode(',', $params);
         foreach ($sortParams as $sortParam) {
